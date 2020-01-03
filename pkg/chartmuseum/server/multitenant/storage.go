@@ -17,13 +17,12 @@ limitations under the License.
 package multitenant
 
 import (
+	"github.com/hangyan/chart-registry/pkg/storage"
 	pathutil "path"
 	"strings"
 
-	cm_logger "helm.sh/chartmuseum/pkg/chartmuseum/logger"
-	cm_repo "helm.sh/chartmuseum/pkg/repo"
-
-	"github.com/chartmuseum/storage"
+	cm_logger "github.com/hangyan/chart-registry/pkg/chartmuseum/logger"
+	cm_repo "github.com/hangyan/chart-registry/pkg/repo"
 )
 
 var (

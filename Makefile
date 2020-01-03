@@ -56,8 +56,8 @@ build-mac: export GO111MODULE=on
 build-mac: export GOPROXY=$(MOD_PROXY_URL)
 build-mac:
 	go build -v --ldflags="-w -X main.Version=$(VERSION) -X main.Revision=$(REVISION)" \
-		-o bin/darwin/amd64/chartmuseum cmd/chartmuseum/main.go # mac osx
-	sha256sum bin/darwin/amd64/chartmuseum || shasum -a 256 bin/darwin/amd64/chartmuseum
+		-o bin/darwin/amd64/chart-registry cmd/chartmuseum/main.go # mac osx
+	sha256sum bin/darwin/amd64/chart-registry || shasum -a 256 bin/darwin/amd64/chart-registry
 
 .PHONY: clean
 clean:

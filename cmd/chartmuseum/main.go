@@ -18,14 +18,14 @@ package main
 
 import (
 	"fmt"
+	"github.com/hangyan/chart-registry/pkg/storage"
 	"log"
 	"os"
 	"strings"
 
-	"github.com/chartmuseum/storage"
-	"helm.sh/chartmuseum/pkg/cache"
-	"helm.sh/chartmuseum/pkg/chartmuseum"
-	"helm.sh/chartmuseum/pkg/config"
+	"github.com/hangyan/chart-registry/pkg/cache"
+	"github.com/hangyan/chart-registry/pkg/chartmuseum"
+	"github.com/hangyan/chart-registry/pkg/config"
 
 	"github.com/urfave/cli"
 )
@@ -44,9 +44,9 @@ var (
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "ChartMuseum"
+	app.Name = "ChartRegistry"
 	app.Version = fmt.Sprintf("%s (build %s)", Version, Revision)
-	app.Usage = "Helm Chart Repository with support for Amazon S3, Google Cloud Storage, Oracle Cloud Infrastructure Object Storage and Openstack"
+	app.Usage = "Helm Chart Repository Hosted on Docker Registry"
 	app.Action = cliHandler
 	app.Flags = config.CLIFlags
 	app.Run(os.Args)
@@ -114,24 +114,7 @@ func backendFromConfig(conf *config.Config) storage.Backend {
 	switch storageFlag {
 	case "local":
 		backend = localBackendFromConfig(conf)
-	case "amazon":
-		backend = amazonBackendFromConfig(conf)
-	case "google":
-		backend = googleBackendFromConfig(conf)
-	case "oracle":
-		backend = oracleBackendFromConfig(conf)
-	case "microsoft":
-		backend = microsoftBackendFromConfig(conf)
-	case "alibaba":
-		backend = alibabaBackendFromConfig(conf)
-	case "openstack":
-		backend = openstackBackendFromConfig(conf)
-	case "baidu":
-		backend = baiduBackendFromConfig(conf)
-	case "etcd":
-		backend = etcdBackendFromConfig(conf)
-	case "tencent":
-		backend = tencentBackendFromConfig(conf)
+
 	default:
 		crash("Unsupported storage backend: ", storageFlag)
 	}
@@ -143,99 +126,6 @@ func localBackendFromConfig(conf *config.Config) storage.Backend {
 	crashIfConfigMissingVars(conf, []string{"storage.local.rootdir"})
 	return storage.Backend(storage.NewLocalFilesystemBackend(
 		conf.GetString("storage.local.rootdir"),
-	))
-}
-
-func amazonBackendFromConfig(conf *config.Config) storage.Backend {
-	// If using alternative s3 endpoint (e.g. Minio) default region to us-east-1
-	if conf.GetString("storage.amazon.endpoint") != "" && conf.GetString("storage.amazon.region") == "" {
-		conf.Set("storage.amazon.region", "us-east-1")
-	}
-	crashIfConfigMissingVars(conf, []string{"storage.amazon.bucket", "storage.amazon.region"})
-	return storage.Backend(storage.NewAmazonS3Backend(
-		conf.GetString("storage.amazon.bucket"),
-		conf.GetString("storage.amazon.prefix"),
-		conf.GetString("storage.amazon.region"),
-		conf.GetString("storage.amazon.endpoint"),
-		conf.GetString("storage.amazon.sse"),
-	))
-}
-
-func googleBackendFromConfig(conf *config.Config) storage.Backend {
-	crashIfConfigMissingVars(conf, []string{"storage.google.bucket"})
-	return storage.Backend(storage.NewGoogleCSBackend(
-		conf.GetString("storage.google.bucket"),
-		conf.GetString("storage.google.prefix"),
-	))
-}
-
-func oracleBackendFromConfig(conf *config.Config) storage.Backend {
-	crashIfConfigMissingVars(conf, []string{"storage.oracle.bucket", "storage.oracle.compartmentid"})
-	return storage.Backend(storage.NewOracleCSBackend(
-		conf.GetString("storage.oracle.bucket"),
-		conf.GetString("storage.oracle.prefix"),
-		conf.GetString("storage.oracle.region"),
-		conf.GetString("storage.oracle.compartmentid"),
-	))
-}
-
-func microsoftBackendFromConfig(conf *config.Config) storage.Backend {
-	crashIfConfigMissingVars(conf, []string{"storage.microsoft.container"})
-	return storage.Backend(storage.NewMicrosoftBlobBackend(
-		conf.GetString("storage.microsoft.container"),
-		conf.GetString("storage.microsoft.prefix"),
-	))
-}
-
-func alibabaBackendFromConfig(conf *config.Config) storage.Backend {
-	crashIfConfigMissingVars(conf, []string{"storage.alibaba.bucket"})
-	return storage.Backend(storage.NewAlibabaCloudOSSBackend(
-		conf.GetString("storage.alibaba.bucket"),
-		conf.GetString("storage.alibaba.prefix"),
-		conf.GetString("storage.alibaba.endpoint"),
-		conf.GetString("storage.alibaba.sse"),
-	))
-}
-
-func openstackBackendFromConfig(conf *config.Config) storage.Backend {
-	crashIfConfigMissingVars(conf, []string{"storage.openstack.container", "storage.openstack.region"})
-	return storage.Backend(storage.NewOpenstackOSBackend(
-		conf.GetString("storage.openstack.container"),
-		conf.GetString("storage.openstack.prefix"),
-		conf.GetString("storage.openstack.region"),
-		conf.GetString("storage.openstack.cacert"),
-	))
-}
-
-func baiduBackendFromConfig(conf *config.Config) storage.Backend {
-	crashIfConfigMissingVars(conf, []string{"storage.baidu.bucket"})
-	return storage.Backend(storage.NewBaiDuBOSBackend(
-		conf.GetString("storage.baidu.bucket"),
-		conf.GetString("storage.baidu.prefix"),
-		conf.GetString("storage.baidu.endpoint"),
-	))
-}
-
-func etcdBackendFromConfig(conf *config.Config) storage.Backend {
-	crashIfConfigMissingVars(conf, []string{"storage.etcd.cafile",
-		"storage.etcd.certfile",
-		"storage.etcd.keyfile",
-		"storage.etcd.prefix"})
-	return storage.Backend(storage.NewEtcdCSBackend(
-		conf.GetString("storage.etcd.endpoint"),
-		conf.GetString("storage.etcd.cafile"),
-		conf.GetString("storage.etcd.certfile"),
-		conf.GetString("storage.etcd.keyfile"),
-		conf.GetString("storage.etcd.prefix"),
-	))
-}
-
-func tencentBackendFromConfig(conf *config.Config) storage.Backend {
-	crashIfConfigMissingVars(conf, []string{"storage.tencent.bucket"})
-	return storage.Backend(storage.NewTencentCloudCOSBackend(
-		conf.GetString("storage.tencent.bucket"),
-		conf.GetString("storage.tencent.prefix"),
-		conf.GetString("storage.tencent.endpoint"),
 	))
 }
 

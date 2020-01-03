@@ -20,11 +20,11 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/hangyan/chart-registry/pkg/storage"
 	pathutil "path"
 	"strconv"
 	"strings"
 
-	"github.com/chartmuseum/storage"
 	helm_chart "helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	helm_repo "helm.sh/helm/v3/pkg/repo"

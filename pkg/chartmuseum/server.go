@@ -17,13 +17,14 @@ limitations under the License.
 package chartmuseum
 
 import (
+	"github.com/hangyan/chart-registry/pkg/storage"
 	"strings"
 
-	"github.com/chartmuseum/storage"
-	"helm.sh/chartmuseum/pkg/cache"
-	cm_logger "helm.sh/chartmuseum/pkg/chartmuseum/logger"
-	cm_router "helm.sh/chartmuseum/pkg/chartmuseum/router"
-	mt "helm.sh/chartmuseum/pkg/chartmuseum/server/multitenant"
+
+	"github.com/hangyan/chart-registry/pkg/cache"
+	cm_logger "github.com/hangyan/chart-registry/pkg/chartmuseum/logger"
+	cm_router "github.com/hangyan/chart-registry/pkg/chartmuseum/router"
+	mt "github.com/hangyan/chart-registry/pkg/chartmuseum/server/multitenant"
 )
 
 type (

@@ -36,13 +36,13 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/hangyan/chart-registry/pkg/storage"
 	pathutil "path"
 	"sync"
 
-	cm_logger "helm.sh/chartmuseum/pkg/chartmuseum/logger"
-	cm_repo "helm.sh/chartmuseum/pkg/repo"
+	cm_logger "github.com/hangyan/chart-registry/pkg/chartmuseum/logger"
+	cm_repo "github.com/hangyan/chart-registry/pkg/repo"
 
-	cm_storage "github.com/chartmuseum/storage"
 	"github.com/ghodss/yaml"
 	"github.com/gin-gonic/gin"
 	helm_repo "helm.sh/helm/v3/pkg/repo"
@@ -102,7 +102,7 @@ func (server *MultiTenantServer) getChartList(log cm_logger.LoggingFn, repo stri
 	return ch
 }
 
-func (server *MultiTenantServer) regenerateRepositoryIndex(log cm_logger.LoggingFn, entry *cacheEntry, diff cm_storage.ObjectSliceDiff) <-chan indexRegeneration {
+func (server *MultiTenantServer) regenerateRepositoryIndex(log cm_logger.LoggingFn, entry *cacheEntry, diff storage.ObjectSliceDiff) <-chan indexRegeneration {
 	ch := make(chan indexRegeneration, 1)
 	tenant := server.Tenants[entry.RepoName]
 
@@ -124,7 +124,7 @@ func (server *MultiTenantServer) regenerateRepositoryIndex(log cm_logger.Logging
 	return ch
 }
 
-func (server *MultiTenantServer) regenerateRepositoryIndexWorker(log cm_logger.LoggingFn, entry *cacheEntry, diff cm_storage.ObjectSliceDiff) (*cm_repo.Index, error) {
+func (server *MultiTenantServer) regenerateRepositoryIndexWorker(log cm_logger.LoggingFn, entry *cacheEntry, diff storage.ObjectSliceDiff) (*cm_repo.Index, error) {
 	repo := entry.RepoName
 
 	log(cm_logger.DebugLevel, "Regenerating index.yaml",
@@ -171,17 +171,17 @@ func (server *MultiTenantServer) regenerateRepositoryIndexWorker(log cm_logger.L
 	return index, err
 }
 
-func (server *MultiTenantServer) fetchChartsInStorage(log cm_logger.LoggingFn, repo string) ([]cm_storage.Object, error) {
+func (server *MultiTenantServer) fetchChartsInStorage(log cm_logger.LoggingFn, repo string) ([]storage.Object, error) {
 	log(cm_logger.DebugLevel, "Fetching chart list from storage",
 		"repo", repo,
 	)
 	allObjects, err := server.StorageBackend.ListObjects(repo)
 	if err != nil {
-		return []cm_storage.Object{}, err
+		return []storage.Object{}, err
 	}
 
 	// filter out storage objects that dont have extension used for chart packages (.tgz)
-	filteredObjects := []cm_storage.Object{}
+	filteredObjects := []storage.Object{}
 	for _, object := range allObjects {
 		if object.HasExtension(cm_repo.ChartPackageFileExtension) {
 			filteredObjects = append(filteredObjects, object)
@@ -191,7 +191,7 @@ func (server *MultiTenantServer) fetchChartsInStorage(log cm_logger.LoggingFn, r
 	return filteredObjects, nil
 }
 
-func (server *MultiTenantServer) removeIndexObject(log cm_logger.LoggingFn, repo string, index *cm_repo.Index, object cm_storage.Object) error {
+func (server *MultiTenantServer) removeIndexObject(log cm_logger.LoggingFn, repo string, index *cm_repo.Index, object storage.Object) error {
 	chartVersion, err := server.getObjectChartVersion(repo, object, false)
 	if err != nil {
 		return server.checkInvalidChartPackageError(log, repo, object, err, "removed")
@@ -205,7 +205,7 @@ func (server *MultiTenantServer) removeIndexObject(log cm_logger.LoggingFn, repo
 	return nil
 }
 
-func (server *MultiTenantServer) updateIndexObject(log cm_logger.LoggingFn, repo string, index *cm_repo.Index, object cm_storage.Object) error {
+func (server *MultiTenantServer) updateIndexObject(log cm_logger.LoggingFn, repo string, index *cm_repo.Index, object storage.Object) error {
 	chartVersion, err := server.getObjectChartVersion(repo, object, true)
 	if err != nil {
 		return server.checkInvalidChartPackageError(log, repo, object, err, "updated")
@@ -219,7 +219,7 @@ func (server *MultiTenantServer) updateIndexObject(log cm_logger.LoggingFn, repo
 	return nil
 }
 
-func (server *MultiTenantServer) addIndexObjectsAsync(log cm_logger.LoggingFn, repo string, index *cm_repo.Index, objects []cm_storage.Object) error {
+func (server *MultiTenantServer) addIndexObjectsAsync(log cm_logger.LoggingFn, repo string, index *cm_repo.Index, objects []storage.Object) error {
 	numObjects := len(objects)
 	if numObjects == 0 {
 		return nil
@@ -242,7 +242,7 @@ func (server *MultiTenantServer) addIndexObjectsAsync(log cm_logger.LoggingFn, r
 	defer cancel()
 
 	for _, object := range objects {
-		go func(o cm_storage.Object) {
+		go func(o storage.Object) {
 			if server.IndexLimit != 0 {
 				// Limit parallelism to the index-limit parameter value
 				// if there are more than IndexLimit concurrent fetches, this send will block
@@ -285,7 +285,7 @@ func (server *MultiTenantServer) addIndexObjectsAsync(log cm_logger.LoggingFn, r
 	return nil
 }
 
-func (server *MultiTenantServer) getObjectChartVersion(repo string, object cm_storage.Object, load bool) (*helm_repo.ChartVersion, error) {
+func (server *MultiTenantServer) getObjectChartVersion(repo string, object storage.Object, load bool) (*helm_repo.ChartVersion, error) {
 	op := object.Path
 	if load {
 		var err error
@@ -301,7 +301,7 @@ func (server *MultiTenantServer) getObjectChartVersion(repo string, object cm_st
 	return cm_repo.ChartVersionFromStorageObject(object)
 }
 
-func (server *MultiTenantServer) checkInvalidChartPackageError(log cm_logger.LoggingFn, repo string, object cm_storage.Object, err error, action string) error {
+func (server *MultiTenantServer) checkInvalidChartPackageError(log cm_logger.LoggingFn, repo string, object storage.Object, err error, action string) error {
 	if err == cm_repo.ErrorInvalidChartPackage {
 		log(cm_logger.WarnLevel, "Invalid package in storage",
 			"repo", repo,

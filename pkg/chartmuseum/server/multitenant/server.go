@@ -18,16 +18,15 @@ package multitenant
 
 import (
 	"fmt"
+	"github.com/hangyan/chart-registry/pkg/storage"
 	"os"
 	"sync"
 
-	"helm.sh/chartmuseum/pkg/cache"
-	cm_logger "helm.sh/chartmuseum/pkg/chartmuseum/logger"
-	cm_router "helm.sh/chartmuseum/pkg/chartmuseum/router"
-	cm_repo "helm.sh/chartmuseum/pkg/repo"
+	"github.com/hangyan/chart-registry/pkg/cache"
+	cm_logger "github.com/hangyan/chart-registry/pkg/chartmuseum/logger"
+	cm_router "github.com/hangyan/chart-registry/pkg/chartmuseum/router"
+	cm_repo "github.com/hangyan/chart-registry/pkg/repo"
 
-	"github.com/chartmuseum/storage"
-	cm_storage "github.com/chartmuseum/storage"
 	"github.com/gin-gonic/gin"
 )
 
@@ -91,7 +90,7 @@ type (
 	}
 
 	fetchedObjects struct {
-		objects []cm_storage.Object
+		objects []storage.Object
 		err     error
 	}
 

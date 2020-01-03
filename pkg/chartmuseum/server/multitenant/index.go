@@ -17,11 +17,11 @@ limitations under the License.
 package multitenant
 
 import (
+	"github.com/hangyan/chart-registry/pkg/storage"
 	pathutil "path"
 
-	cm_storage "github.com/chartmuseum/storage"
-	cm_logger "helm.sh/chartmuseum/pkg/chartmuseum/logger"
-	cm_repo "helm.sh/chartmuseum/pkg/repo"
+	cm_logger "github.com/hangyan/chart-registry/pkg/chartmuseum/logger"
+	cm_repo "github.com/hangyan/chart-registry/pkg/repo"
 )
 
 var (
@@ -49,7 +49,7 @@ func (server *MultiTenantServer) getIndexFile(log cm_logger.LoggingFn, repo stri
 	}
 
 	objects := server.getRepoObjectSlice(entry)
-	diff := cm_storage.GetObjectSliceDiff(objects, fo.objects)
+	diff := storage.GetObjectSliceDiff(objects, fo.objects)
 
 	// return fast if no changes
 	if !diff.Change {
@@ -96,8 +96,8 @@ func (server *MultiTenantServer) saveStatefile(log cm_logger.LoggingFn, repo str
 	)
 }
 
-func (server *MultiTenantServer) getRepoObjectSlice(entry *cacheEntry) []cm_storage.Object {
-	var objects []cm_storage.Object
+func (server *MultiTenantServer) getRepoObjectSlice(entry *cacheEntry) []storage.Object {
+	var objects []storage.Object
 	for _, entry := range entry.RepoIndex.Entries {
 		for _, chartVersion := range entry {
 			object := cm_repo.StorageObjectFromChartVersion(chartVersion)

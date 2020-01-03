@@ -30,9 +30,9 @@ import (
 	"testing"
 	"time"
 
-	cm_logger "helm.sh/chartmuseum/pkg/chartmuseum/logger"
-	cm_router "helm.sh/chartmuseum/pkg/chartmuseum/router"
-	"helm.sh/chartmuseum/pkg/repo"
+	cm_logger "github.com/hangyan/chart-registry/pkg/chartmuseum/logger"
+	cm_router "github.com/hangyan/chart-registry/pkg/chartmuseum/router"
+	"github.com/hangyan/chart-registry/pkg/repo"
 
 	"github.com/chartmuseum/storage"
 	"github.com/gin-gonic/gin"
