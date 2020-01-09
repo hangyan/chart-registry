@@ -1,5 +1,5 @@
 # Change this and commit to create new release
-VERSION=0.11.0
+VERSION=1.0.0
 REVISION := $(shell git rev-parse --short HEAD;)
 
 # MOD_PROXY_URL ?= "https://gocenter.io"
