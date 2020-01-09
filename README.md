@@ -60,7 +60,7 @@ docker run -d --restart=always --name=registry --network=registry \
 
 docker run -d -p 8080:8080 --restart=always --name=chart-registry  \
 	-e DEBUG=1 -e STORAGE=registry -e STORAGE_REGISTRY_REPO=registry \
-	--network=registry hangyan/chart-registry:latest
+	--network=registry index.alauda.cn/claas/chart-registry:latest
 ```
 
 ### Ready to use Helm

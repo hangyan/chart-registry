@@ -122,5 +122,5 @@ get-version:
 
 .PHONY: get-version
 image: build-linux
-	@docker build -t hangyan/chart-registry .
-	@docker push hangyan/chart-registry
+	@docker build -t index.alauda.cn/claas/chart-registry .
+	@docker push index.alauda.cn/claas/chart-registry
