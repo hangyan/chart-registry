@@ -2,6 +2,7 @@ package storage
 
 import (
 	"fmt"
+	"github.com/hangyan/chart-registry/pkg/storage/registry"
 	"path/filepath"
 	"time"
 )
@@ -10,6 +11,16 @@ type Object struct {
 	Path         string
 	Content      []byte
 	LastModified time.Time
+}
+
+func NewObject(chart *registry.ChartObject) *Object {
+	var object Object
+	object.Path = chart.Chart.Metadata.Name + "-" + chart.Chart.Metadata.Version + ".tgz"
+	object.Content = chart.ChartContent
+	// todo: fix
+	object.LastModified = time.Now()
+	return &object
+
 }
 
 // HasExtension determines whether or not an object contains a file extension

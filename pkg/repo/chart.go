@@ -21,6 +21,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/hangyan/chart-registry/pkg/storage"
+	"k8s.io/klog"
 	pathutil "path"
 	"strconv"
 	"strings"
@@ -67,12 +68,15 @@ func ChartVersionFromStorageObject(object storage.Object) (*helm_repo.ChartVersi
 		}
 		return chartVersion, nil
 	}
+
 	chart, err := chartFromContent(object.Content)
 	if err != nil {
+		klog.Info("fjuck 2: ", err)
 		return nil, ErrorInvalidChartPackage
 	}
 	digest, err := provenanceDigestFromContent(object.Content)
 	if err != nil {
+		klog.Info("fjuck 3")
 		return nil, err
 	}
 	chartVersion := &helm_repo.ChartVersion{

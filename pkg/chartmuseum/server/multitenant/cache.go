@@ -342,6 +342,7 @@ func (server *MultiTenantServer) initCacheEntry(log cm_logger.LoggingFn, repo st
 			log(cm_logger.DebugLevel, "Entry found in cache store",
 				"repo", repo,
 			)
+
 		}
 	} else {
 		content, err = server.ExternalCacheStore.Get(repo)

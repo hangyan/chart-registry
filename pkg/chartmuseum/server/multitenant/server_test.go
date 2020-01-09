@@ -19,6 +19,7 @@ package multitenant
 import (
 	"bytes"
 	"fmt"
+	"github.com/hangyan/chart-registry/pkg/storage"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -34,7 +35,6 @@ import (
 	cm_router "github.com/hangyan/chart-registry/pkg/chartmuseum/router"
 	"github.com/hangyan/chart-registry/pkg/repo"
 
-	"github.com/chartmuseum/storage"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
 )

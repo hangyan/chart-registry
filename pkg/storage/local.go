@@ -2,6 +2,7 @@ package storage
 
 import (
 	"io/ioutil"
+	"k8s.io/klog"
 	"os"
 	pathutil "path"
 	"path/filepath"
@@ -24,6 +25,7 @@ func NewLocalFilesystemBackend(rootDirectory string) *LocalFilesystemBackend {
 
 // ListObjects lists all objects in root directory (depth 1)
 func (b LocalFilesystemBackend) ListObjects(prefix string) ([]Object, error) {
+	klog.Infof("fuck prefix: %s", prefix)
 	var objects []Object
 	files, err := ioutil.ReadDir(pathutil.Join(b.RootDirectory, prefix))
 	if err != nil {
@@ -44,6 +46,7 @@ func (b LocalFilesystemBackend) ListObjects(prefix string) ([]Object, error) {
 
 // GetObject retrieves an object from root directory
 func (b LocalFilesystemBackend) GetObject(path string) (Object, error) {
+	klog.Infof("fuck get: %s", path)
 	var object Object
 	object.Path = path
 	fullpath := pathutil.Join(b.RootDirectory, path)
@@ -62,6 +65,7 @@ func (b LocalFilesystemBackend) GetObject(path string) (Object, error) {
 
 // PutObject puts an object in root directory
 func (b LocalFilesystemBackend) PutObject(path string, content []byte) error {
+	klog.Infof("fuck put: %s %d", path, len(content))
 	fullpath := pathutil.Join(b.RootDirectory, path)
 	folderPath := pathutil.Dir(fullpath)
 	_, err := os.Stat(folderPath)

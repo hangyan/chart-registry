@@ -114,6 +114,8 @@ func backendFromConfig(conf *config.Config) storage.Backend {
 	switch storageFlag {
 	case "local":
 		backend = localBackendFromConfig(conf)
+	case "registry":
+		backend = registryBackendFromConfig(conf)
 
 	default:
 		crash("Unsupported storage backend: ", storageFlag)
@@ -127,6 +129,11 @@ func localBackendFromConfig(conf *config.Config) storage.Backend {
 	return storage.Backend(storage.NewLocalFilesystemBackend(
 		conf.GetString("storage.local.rootdir"),
 	))
+}
+
+func registryBackendFromConfig(conf *config.Config) storage.Backend {
+	crashIfConfigMissingVars(conf, []string{"storage.registry.repo"})
+	return storage.Backend(storage.NewRegistryBackend(conf.GetString("storage.registry.repo")))
 }
 
 func storeFromConfig(conf *config.Config) cache.Store {

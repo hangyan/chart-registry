@@ -17,11 +17,12 @@ limitations under the License.
 package repo
 
 import (
+	"github.com/hangyan/chart-registry/pkg/storage"
 	"io/ioutil"
 	"testing"
 	"time"
 
-	"github.com/chartmuseum/storage"
+
 	"github.com/stretchr/testify/suite"
 	helm_repo "helm.sh/helm/v3/pkg/repo"
 )

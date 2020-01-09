@@ -18,11 +18,10 @@ package chartmuseum
 
 import (
 	"fmt"
+	"github.com/hangyan/chart-registry/pkg/storage"
 	"os"
 	"testing"
 	"time"
-
-	"github.com/chartmuseum/storage"
 
 	"github.com/stretchr/testify/suite"
 )
