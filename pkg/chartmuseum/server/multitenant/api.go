@@ -21,8 +21,8 @@ import (
 	pathutil "path/filepath"
 	"sort"
 
-	cm_logger "helm.sh/chartmuseum/pkg/chartmuseum/logger"
-	cm_repo "helm.sh/chartmuseum/pkg/repo"
+	cm_logger "github.com/hangyan/chart-registry/pkg/chartmuseum/logger"
+	cm_repo "github.com/hangyan/chart-registry/pkg/repo"
 
 	helm_repo "helm.sh/helm/v3/pkg/repo"
 )

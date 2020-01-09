@@ -1,4 +1,4 @@
-module helm.sh/chartmuseum
+module github.com/hangyan/chart-registry
 
 go 1.12
 
@@ -6,14 +6,20 @@ require (
 	github.com/alicebob/gopher-json v0.0.0-20180125190556-5a6b3ba71ee6 // indirect
 	github.com/alicebob/miniredis v2.5.0+incompatible
 	github.com/chartmuseum/auth v0.2.0
-	github.com/chartmuseum/storage v0.5.0
+	github.com/containerd/containerd v1.3.0
+	github.com/deislabs/oras v0.7.0
+	github.com/docker/go-units v0.4.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/gin-contrib/size v0.0.0-20190528085907-355431950c57
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-redis/redis v6.15.2+incompatible
 	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/gomodule/redigo v2.0.0+incompatible // indirect
+	github.com/gosuri/uitable v0.0.1
 	github.com/mattn/go-isatty v0.0.10 // indirect
+	github.com/opencontainers/go-digest v1.0.0-rc1
+	github.com/opencontainers/image-spec v1.0.1
+	github.com/pkg/errors v0.8.1
 	github.com/prometheus/client_golang v1.2.1
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/viper v1.4.0
@@ -24,6 +30,8 @@ require (
 	go.uber.org/zap v1.10.0
 	golang.org/x/sys v0.0.0-20191206220618-eeba5f6aabab // indirect
 	helm.sh/helm/v3 v3.0.1
+	k8s.io/klog v1.0.0
+	sigs.k8s.io/yaml v1.1.0
 )
 
 replace (

@@ -26,7 +26,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	cm_repo "helm.sh/chartmuseum/pkg/repo"
+	cm_repo "github.com/hangyan/chart-registry/pkg/repo"
 )
 
 var (

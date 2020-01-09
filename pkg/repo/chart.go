@@ -20,11 +20,12 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/hangyan/chart-registry/pkg/storage"
+	"k8s.io/klog"
 	pathutil "path"
 	"strconv"
 	"strings"
 
-	"github.com/chartmuseum/storage"
 	helm_chart "helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	helm_repo "helm.sh/helm/v3/pkg/repo"
@@ -67,12 +68,15 @@ func ChartVersionFromStorageObject(object storage.Object) (*helm_repo.ChartVersi
 		}
 		return chartVersion, nil
 	}
+
 	chart, err := chartFromContent(object.Content)
 	if err != nil {
+		klog.Info("fjuck 2: ", err)
 		return nil, ErrorInvalidChartPackage
 	}
 	digest, err := provenanceDigestFromContent(object.Content)
 	if err != nil {
+		klog.Info("fjuck 3")
 		return nil, err
 	}
 	chartVersion := &helm_repo.ChartVersion{
