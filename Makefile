@@ -118,3 +118,9 @@ version-released:
 .PHONY: get-version
 get-version:
 	@echo $(VERSION)
+
+
+.PHONY: get-version
+image:
+	@docker build -t hangyan/chart-registry .
+	@docker push hangyan/chart-registry
