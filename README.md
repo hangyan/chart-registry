@@ -10,9 +10,17 @@ Powered by some great Go technology:
 - [chartmuseum/chartmuseum](https://github.com/chartmuseum/chartmuseum) - for api 
 
 
+## Why this project
+
+Helm 3 support OCI(https://www.opencontainers.org/) for package distribution.Chart packages are able to be stored and shared across OCI-based registries. However, it's a little inconvenient to use this feature, there are sperated sub-command to create and use chart in OCI registries. ChartMuseum also does not support use OCI registry as backend storage. So this project combines the idea, it's based on chartmuseum, use OCI registry as storage backend, and act as an nomral http repo for helm client. The current implementation have limited features, auth support is not tested yet, but it will be added soon. Also welcome to all kinds of issues and contributions.
+
+
+
+## Usage
+
 ### Using binary
 
-Download the binary from [Releases](https://github.com/hangyan/chart-registry/releases) page. If you already have an registry running ,you can just running
+Download the binary from [Release](https://github.com/hangyan/chart-registry/releases/tag/v1.0.0) page. If you already have an registry running ,you can just running
 
 ```bash
 chmod a+x chart-registry
