@@ -152,10 +152,12 @@ func (b *RegistryBackend) PutObject(path string, content []byte) error {
 	}
 
 	if err := b.Client.SaveChart(ch, r); err != nil {
+		klog.Errorf("Save chart error: %s %s", r.FullName(), err.Error())
 		return err
 	}
 
 	if err := b.Client.PushChart(r); err != nil {
+		klog.Errorf("Push chart error: %s %s", r.FullName(), err.Error())
 		return err
 	}
 

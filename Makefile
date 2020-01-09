@@ -121,6 +121,6 @@ get-version:
 
 
 .PHONY: get-version
-image:
+image: build-linux
 	@docker build -t hangyan/chart-registry .
 	@docker push hangyan/chart-registry

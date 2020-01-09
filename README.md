@@ -24,8 +24,16 @@ We will need the following things to start:
 ```bash
 docker network create registry
 
-docker run -d -p 5000:5000 --restart=always --name=registry --network=registry registry:2
-docker run -d -p 8080:8080 --restart=always --name=chart-registry  -e DEBUG=1 -e STORAGE=registry -e STORAGE_REGISTRY_REPO=registry:5000 --network=registry hangyan/chart-registry:latest
+docker run -d --restart=always --name=registry --network=registry \
+	-e REGISTRY_HTTP_ADDR=0.0.0.0:443 \
+	-e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt \
+	-e REGISTRY_HTTP_TLS_KEY=/certs/domain.key \
+	-p 443:443 \
+	hangyan/https-registry:2
+
+docker run -d -p 8080:8080 --restart=always --name=chart-registry  \
+	-e DEBUG=1 -e STORAGE=registry -e STORAGE_REGISTRY_REPO=registry \
+	--network=registry hangyan/chart-registry:latest
 ```
 
 Then, we can use a Helm(2 or 3) client to fetch/upload charts in this repo

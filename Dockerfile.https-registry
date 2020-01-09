@@ -1,0 +1,4 @@
+FROM registry:2
+
+COPY scripts/certs /certs
+
