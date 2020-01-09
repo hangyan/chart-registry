@@ -10,6 +10,25 @@ Powered by some great Go technology:
 - [chartmuseum/chartmuseum](https://github.com/chartmuseum/chartmuseum) - for api 
 
 
+### Using binary
+
+Download the binary from [Releases](https://github.com/hangyan/chart-registry/releases) page. If you already have an registry running ,you can just running
+
+```bash
+chmod a+x chart-registry
+./chart-registry --storage=registry --storage-registry-repo=localhost:5000 --debug  --port=8080
+```
+
+`localhost:5000` should the url of your registry. If you don't have a running registry for now, you can install one using the following command:
+
+
+```bash
+docker run -d \
+  -p 5000:5000 \
+  --restart=always \
+  --name registry \
+  registry:2
+```
 
 
 ### Using Docker
@@ -36,6 +55,9 @@ docker run -d -p 8080:8080 --restart=always --name=chart-registry  \
 	--network=registry hangyan/chart-registry:latest
 ```
 
+### Ready to use Helm
+
+
 Then, we can use a Helm(2 or 3) client to fetch/upload charts in this repo
 
 
@@ -52,6 +74,13 @@ curl -v --fail -F chart=@simple-0.1.0.tgz http://127.0.0.1:8080/api/charts
 helm repo update
 helm fetch oci/simple-pod
 
+```
+
+If you are using helm 3 and the `chart-registry` binary, you can use the helm command to check the oci charts
+
+```bash
+export HELM_EXPERIMENTAL_OCI=1
+helm chart list
 ```
 
 
