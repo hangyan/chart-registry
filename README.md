@@ -7,12 +7,12 @@
 
 Powered by some great Go technology:
 - [helm/helm](https://github.com/helm/helm) - for working with charts and oci storage
-- [chartmuseum/chartmuseum](https://github.com/chartmuseum/chartmuseum) - for api 
+- [chartmuseum/chartmuseum](https://github.com/chartmuseum/chartmuseum) - for api and code base
 
 
 ## Why this project
 
-Helm 3 support OCI(https://www.opencontainers.org/) for package distribution.Chart packages are able to be stored and shared across OCI-based registries. However, it's a little inconvenient to use this feature, there are sperated sub-command to create and use chart in OCI registries. ChartMuseum also does not support use OCI registry as backend storage. So this project combines the idea, it's based on chartmuseum, use OCI registry as storage backend, and act as an nomral http repo for helm client. The current implementation have limited features, auth support is not tested yet, but it will be added soon. Also welcome to all kinds of issues and contributions.
+Helm 3 support [OCI](https://www.opencontainers.org/) for package distribution.Chart packages are able to be stored and shared across OCI-based registries. However, it's a little inconvenient to use this feature, there are sperated sub-command to create and use chart in OCI registries. ChartMuseum also does not support use OCI registry as backend storage. So this project combines the idea, it's based on chartmuseum, use OCI registry as storage backend, and act as an nomral http repo for helm client. The current implementation have limited features, auth support is not tested yet, but it will be added soon. Also welcome to all kinds of issues and contributions.
 
 
 
