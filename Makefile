@@ -21,8 +21,8 @@ build-windows: export GO111MODULE=on
 build-windows: export GOPROXY=$(MOD_PROXY_URL)
 build-windows:
 	go build -v --ldflags="-w -X main.Version=$(VERSION) -X main.Revision=$(REVISION)" \
-		-o bin/windows/amd64/chartmuseum cmd/chartmuseum/main.go  # windows
-	sha256sum bin/windows/amd64/chartmuseum || shasum -a 256 bin/windows/amd64/chartmuseum
+		-o bin/windows/amd64/chart-registry cmd/chart-registry/main.go  # windows
+	sha256sum bin/windows/amd64/chart-registry || shasum -a 256 bin/windows/amd64/chart-registry
 
 build-linux: export GOOS=linux
 build-linux: export GOARCH=amd64
@@ -31,8 +31,8 @@ build-linux: export GO111MODULE=on
 build-linux: export GOPROXY=$(MOD_PROXY_URL)
 build-linux:
 	go build -v --ldflags="-w -X main.Version=$(VERSION) -X main.Revision=$(REVISION)" \
-		-o bin/linux/amd64/chartmuseum cmd/chartmuseum/main.go  # linux
-	sha256sum bin/linux/amd64/chartmuseum || shasum -a 256 bin/linux/amd64/chartmuseum
+		-o bin/linux/amd64/chart-registry cmd/chart-registry/main.go  # linux
+	sha256sum bin/linux/amd64/chart-registry || shasum -a 256 bin/linux/amd64/chart-registry
 
 build-armv7: export GOOS=linux
 build-armv7: export GOARCH=arm
@@ -42,12 +42,12 @@ build-armv7: export GO111MODULE=on
 build-armv7: export GOPROXY=$(MOD_PROXY_URL)
 build-armv7:
 	go build -v --ldflags="-w -X main.Version=$(VERSION) -X main.Revision=$(REVISION)" \
-		-o bin/linux/armv7/chartmuseum cmd/chartmuseum/main.go  # linux
+		-o bin/linux/armv7/chart-registry cmd/chart-registry/main.go  # linux
 
 container-armv7: build-armv7
 container-armv7:
 	docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-	docker build . -t chartmuseum:v$(VERSION) -f Dockerfile.arm
+	docker build . -t chart-registry:v$(VERSION) -f Dockerfile.arm
 
 build-mac: export GOOS=darwin
 build-mac: export GOARCH=amd64
@@ -56,7 +56,7 @@ build-mac: export GO111MODULE=on
 build-mac: export GOPROXY=$(MOD_PROXY_URL)
 build-mac:
 	go build -v --ldflags="-w -X main.Version=$(VERSION) -X main.Revision=$(REVISION)" \
-		-o bin/darwin/amd64/chart-registry cmd/chartmuseum/main.go # mac osx
+		-o bin/darwin/amd64/chart-registry cmd/chart-registry/main.go # mac osx
 	sha256sum bin/darwin/amd64/chart-registry || shasum -a 256 bin/darwin/amd64/chart-registry
 
 .PHONY: clean
@@ -90,7 +90,7 @@ acceptance: setup-test-environment
 .PHONY: run
 run:
 	@rm -rf .chartstorage/
-	@bin/darwin/amd64/chartmuseum --debug --port=8080 --storage="local" \
+	@bin/darwin/amd64/chart-registry --debug --port=8080 --storage="local" \
 		--storage-local-rootdir=".chartstorage/"
 
 .PHONY: tree
@@ -101,7 +101,7 @@ tree:
 .PHONY: goviz
 goviz:
 	#@go get -u github.com/RobotsAndPencils/goviz
-	@goviz -i helm.sh/chartmuseum/cmd/chartmuseum -l | dot -Tpng -o goviz.png
+	@goviz -i helm.sh/chart-registry/cmd/chart-registry -l | dot -Tpng -o goviz.png
 
 .PHONY: release-latest
 release-latest:
