@@ -11,6 +11,8 @@ type Object struct {
 	Path         string
 	Content      []byte
 	LastModified time.Time
+
+	Name string
 }
 
 func NewObject(chart *registry.ChartObject) *Object {
@@ -19,6 +21,7 @@ func NewObject(chart *registry.ChartObject) *Object {
 	object.Content = chart.ChartContent
 	// todo: fix
 	object.LastModified = time.Now()
+	object.Name = chart.Name
 	return &object
 
 }

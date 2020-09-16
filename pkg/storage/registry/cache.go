@@ -72,17 +72,21 @@ type (
 	}
 
 	ChartObject struct {
-		Chart     *chart.Chart
+		Chart        *chart.Chart
 		ChartContent []byte
-		CreatedAt time.Time
+		CreatedAt    time.Time
+
+		// oci image name
+		Name string
 	}
 )
 
 func (cs *CacheRefSummary) ToChartObject() *ChartObject {
 	return &ChartObject{
-		CreatedAt: cs.CreatedAt,
-		Chart:     cs.Chart,
+		CreatedAt:    cs.CreatedAt,
+		Chart:        cs.Chart,
 		ChartContent: cs.ContentBytes,
+		Name:         cs.Name,
 	}
 }
 

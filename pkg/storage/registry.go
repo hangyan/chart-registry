@@ -2,6 +2,7 @@ package storage
 
 import (
 	"bytes"
+	"errors"
 	"github.com/deislabs/oras/pkg/auth/docker"
 	"github.com/hangyan/chart-registry/pkg/storage/registry"
 	"helm.sh/helm/v3/pkg/chart/loader"
@@ -13,6 +14,10 @@ import (
 	"strings"
 )
 
+var (
+	objectCache map[string]Object
+)
+
 type RegistryBackend struct {
 	Client registry.Client
 
@@ -20,6 +25,14 @@ type RegistryBackend struct {
 
 	CacheRoot string
 }
+
+func createObjectMap(objects []Object) {
+	objectCache = map[string]Object{}
+	for _, item := range objects {
+		objectCache[item.Path] = item
+	}
+}
+
 
 func NewRegistryBackend(repo string) *RegistryBackend {
 
@@ -59,8 +72,8 @@ func (b *RegistryBackend) ListObjects(prefix string) ([]Object, error) {
 
 	}
 	klog.Infof("Retrieve %d objects from storage", len(result))
+	createObjectMap(result)
 	return result, nil
-
 }
 
 func (b *RegistryBackend) GetObject(path string) (Object, error) {
@@ -84,8 +97,19 @@ func (b *RegistryBackend) GetObject(path string) (Object, error) {
 
 	klog.Infof("Retrieve object: %s", path)
 
-	name, version := parseChartName(path)
-	ref := b.Repo + "/" + name + ":" + version
+	// old ref
+	//name, version := parseChartName(path)
+	// ref := b.Repo + "/" + name + ":" + version
+
+	// new ref
+	obj := objectCache[path]
+	ref := obj.Name
+	if ref != "" {
+		klog.Infof("get ref for path: %s -> %s", path, obj.Name)
+	} else {
+		return object, errors.New("cannot get ref for path")
+	}
+
 	r, err := registry.ParseReference(ref)
 	if err != nil {
 		return object, err
