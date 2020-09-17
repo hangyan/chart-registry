@@ -16,6 +16,7 @@ require (
 	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/gomodule/redigo v2.0.0+incompatible // indirect
 	github.com/gosuri/uitable v0.0.1
+	github.com/heroku/docker-registry-client v0.0.0-20190909225348-afc9e1acc3d5
 	github.com/mattn/go-isatty v0.0.10 // indirect
 	github.com/opencontainers/go-digest v1.0.0-rc1
 	github.com/opencontainers/image-spec v1.0.1

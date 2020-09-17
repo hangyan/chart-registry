@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/deislabs/oras/pkg/auth/docker"
 	"github.com/hangyan/chart-registry/pkg/storage/registry"
+	registryclient "github.com/heroku/docker-registry-client/registry"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/helmpath"
 	"io/ioutil"
@@ -24,6 +25,8 @@ type RegistryBackend struct {
 	Repo string
 
 	CacheRoot string
+
+	Hub *registryclient.Registry
 }
 
 func createObjectMap(objects []Object) {
@@ -52,16 +55,59 @@ func NewRegistryBackend(repo string) *RegistryBackend {
 		panic(err)
 	}
 
+	// distribution client
+	url := repo
+	if !strings.HasPrefix(repo, "http") {
+		url = "http://" + repo
+	}
+	hub, err := registryclient.NewInsecure(url, "", "")
+	if err != nil {
+		panic(err)
+	}
+
 	return &RegistryBackend{
 		Client:    *regClient,
 		Repo:      repo,
+		Hub: hub,
 		CacheRoot: helmpath.CachePath("registry", registry.CacheRootDir),
 	}
 
 }
 
+
+func (b *RegistryBackend) listObjects(prefix string) ([]Object, error) {
+	repositories, err := b.Hub.Repositories()
+	if err != nil {
+		return nil, err
+	}
+	klog.Infof("get repo list: %+v", repositories)
+
+	for _, repo := range repositories {
+		tags, err := b.Hub.Tags(repo)
+		if err != nil {
+			return nil, err
+		}
+		for _, tag := range tags {
+			klog.Infof("get manifest for: %s %s", repo, tag)
+			manifest, err := b.Hub.Manifest(repo, tag)
+			if err != nil {
+				klog.Error("fuck error:", err)
+				return nil, err
+			}
+			klog.Infof("fuck manifest: %+v", manifest)
+		}
+	}
+
+	return nil, nil
+}
+
+
 func (b *RegistryBackend) ListObjects(prefix string) ([]Object, error) {
 	klog.Info("List objects with prefix: ", prefix)
+
+	b.listObjects(prefix)
+
+
 	objects, err := b.Client.ListCharts()
 	if err != nil {
 		return nil, err
